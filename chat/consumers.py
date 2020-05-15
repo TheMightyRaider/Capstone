@@ -9,6 +9,7 @@ import json
 import cv2
 import io
 
+from .models import UserAndEncodingDetail
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
@@ -30,6 +31,7 @@ class ChatConsumer(WebsocketConsumer):
 
     # Receive message from WebSocket
     def receive(self, text_data):
+        print(UserAndEncodingDetail.objects.all())
         bts_again=base64.b64decode(text_data)
         buff = np.fromstring(bts_again, np.uint8)
         buff = buff.reshape(1, -1)
