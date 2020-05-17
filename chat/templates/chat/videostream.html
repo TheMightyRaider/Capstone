@@ -8,26 +8,27 @@
   <body>
     <h2>Rasp Stream</h2>
     <p id="response"></p>
+    <img id="image" src="" width="1280" height="720" />
   </body>
   <script>
     // var roomName = {{ room_name_json }};
     // console.log(room_name_json)
 
-    var chatSocket = new WebSocket(
+    var imageSocket = new WebSocket(
       "ws://" + window.location.host + "/ws/livestream/"
     );
 
-    chatSocket.onopen = function (e) {
+    imageSocket.onopen = function (e) {
       console.log("Connected");
     };
 
-    chatSocket.onmessage = function (e) {
+    imageSocket.onmessage = function (e) {
       var data = JSON.parse(e.data);
       var message = data["message"];
-      document.querySelector("#response").innerText += message + "/n";
+      document.querySelector("#image").src = "data:image/jpg;base64," + message;
     };
 
-    chatSocket.onclose = function (e) {
+    imageSocket.onclose = function (e) {
       console.error("Chat socket closed unexpectedly");
     };
   </script>
