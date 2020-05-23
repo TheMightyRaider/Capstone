@@ -47,7 +47,7 @@ class LiveStreamConsumer(WebsocketConsumer):
 
     # Receive message from WebSocket
     def receive(self, text_data):
-        global count,process_this_frame
+        global process_this_frame
 
         obj={'recognised_name':'None'}
         bts_again=base64.b64decode(text_data)
@@ -67,7 +67,6 @@ class LiveStreamConsumer(WebsocketConsumer):
             names=[]
 
             for encoding in encodings:
-                print(count)
                 matches = face_recognition.compare_faces(encoding_array,encoding)
                 name='Unknown'
                 if True in matches:
@@ -88,7 +87,7 @@ class LiveStreamConsumer(WebsocketConsumer):
 
         process_this_frame= process_this_frame + 1 
 
-        sendmail(obj)
+        # sendmail(obj)
 
         # Send message to room 
         async_to_sync(self.channel_layer.group_send)(

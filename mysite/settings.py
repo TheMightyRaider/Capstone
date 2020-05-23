@@ -131,6 +131,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+LOGIN_REDIRECT_URL='/index'
+
 ASGI_APPLICATION = 'mysite.routing.application'
 
 CHANNEL_LAYERS = {

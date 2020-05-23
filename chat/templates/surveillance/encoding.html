@@ -1,0 +1,22 @@
+<html>
+  <body>
+    <h1>ENCODING</h1>
+
+    {% if form.errors %}
+    <p>Invalid Input</p>
+
+    {% endif %}
+    <form
+      method="POST"
+      enctype="multipart/form-data"
+      action="{% url 'encodings' %}"
+    >
+      {% csrf_token %}
+      <p>Username</p>
+      <input type="text" name="name" />
+      <p>Image</p>
+      <input type="file" name="encoding" />
+      <input type="submit" value="upload" />
+    </form>
+  </body>
+</html>

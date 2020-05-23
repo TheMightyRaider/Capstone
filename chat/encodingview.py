@@ -8,11 +8,16 @@ import cv2
 
 from rest_framework.views import APIView
 from rest_framework.response import Response 
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import render
 from .models import UserAndEncodingDetail
 
 
 class generateImageEncoding(APIView):
+    permission_classes=[IsAuthenticated]
+
     def post(self,request):
+        print(request.FILES)
         data=request.FILES['encoding']
         name=request.data['name']
         imagebits=data.read()
@@ -30,10 +35,12 @@ class generateImageEncoding(APIView):
             user_encoding=json_encoded_list
             user_name=name
 
-        store_in_db=UserAndEncodingDetail.objects.create(encoding=user_encoding,person_name=user_name)
+        store_in_db=UserAndEncodingDetail.objects.create(owner=request.user,encoding=user_encoding,person_name=user_name)
         
         if store_in_db is not None:
             return Response({'success':True})
         else:
             return Response({'success':False})
      
+    def get(self,request):
+        return render(request,'surveillance/encoding.html',{})
