@@ -25,7 +25,8 @@
     imageSocket.onmessage = function (e) {
       var data = JSON.parse(e.data);
       var message = data["message"];
-      document.querySelector("#image").src = "data:image/jpg;base64," + message;
+      var frame = message.slice(2, length - 1);
+      document.querySelector("#image").src = "data:image/jpg;base64," + frame;
     };
 
     imageSocket.onclose = function (e) {

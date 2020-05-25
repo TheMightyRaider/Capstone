@@ -24,9 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '150-slj$7!ho)v%#-&y6_^m9ze#ne8=-j$sxe&e1!86_ax*4ge'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -145,3 +145,8 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+CELERY_BROKER_URL='redis://127.0.0.1:6379/'
+CELERY_ACCEPT_CONTENT=['json']
+CELERY_TASK_SERIALIZER='json'
+

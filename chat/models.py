@@ -9,3 +9,11 @@ class UserAndEncodingDetail(models.Model):
 
     def __str__(self):
         return self.person_name
+
+class LogDetail(models.Model):
+    owner=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,null=True)
+    encoding=models.TextField()
+    timestamp=models.DateTimeField('Captured at')
+
+    def __str__(self):
+        return self.owner.username
