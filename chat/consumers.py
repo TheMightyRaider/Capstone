@@ -91,7 +91,7 @@ class LiveStreamConsumer(WebsocketConsumer):
                 names.append(name)
                 obj['recognised_name']=names
                 obj['timestamp']=timezone.now()
-                obj['intruder_frame']=bts_again
+                obj['intruder_frame']=frames
                 obj['user_id']=user_id
 
             process_this_frame = 0 

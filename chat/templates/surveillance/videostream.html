@@ -3,7 +3,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Chat Room</title>
+    <title>Surviellance System</title>
   </head>
   <body>
     <h2>Rasp Stream</h2>
@@ -11,9 +11,6 @@
     <img id="image" src="" width="1280" height="720" />
   </body>
   <script>
-    // var roomName = {{ room_name_json }};
-    // console.log(room_name_json)
-
     var imageSocket = new WebSocket(
       "ws://" + window.location.host + "/ws/livestream/"
     );

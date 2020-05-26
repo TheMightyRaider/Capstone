@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response 
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import render
-from .models import UserAndEncodingDetail
+from .models import UserAndEncodingDetail,LogDetail
 
 
 class generateImageEncoding(APIView):
@@ -44,3 +44,19 @@ class generateImageEncoding(APIView):
      
     def get(self,request):
         return render(request,'surveillance/encoding.html',{})
+
+class generateLog(APIView):
+    permission_classes=[IsAuthenticated]
+    
+    def get(self,request):
+        images=[]
+        current_user=request.user
+        log_array=LogDetail.objects.filter(owner=current_user)
+        for item in log_array:
+            length=len(item.encoding)
+            x=slice(2,length-1)
+            base64_format=item.encoding[x]
+            images.append(base64_format)
+
+        context={'images':images}
+        return render(request,'surveillance/log.html',context)
