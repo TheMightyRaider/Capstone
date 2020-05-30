@@ -1,0 +1,8 @@
+<html>
+  <body>
+    <h1>Log Details</h1>
+    {% for image in images %}
+    <img src="data:image/jpg;base64, {{image}}" />
+    {% endfor %}
+  </body>
+</html>

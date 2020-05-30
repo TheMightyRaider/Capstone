@@ -1,0 +1,13 @@
+<html>
+  <body>
+    <h1>Registration Page</h1>
+    <form method="post" action="{% url 'register' %}">
+      {% csrf_token %} {% if forms.errors %}
+      <p>Invalid Data</p>
+
+      {% endif %} {{form}}
+
+      <input type="submit" value="Register" />
+    </form>
+  </body>
+</html>

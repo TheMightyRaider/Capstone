@@ -3,15 +3,20 @@ from asgiref.sync import async_to_sync
 from imutils.video import FPS
 import face_recognition
 import numpy as np
+import datetime
 import base64
 import json
 import cv2
 import time
-import datetime
 
-from .models import UserAndEncodingDetail
+from .models import UserAndEncodingDetail,LogDetail
+from .emailtask import send_email_task
+from threading import Thread
 from decouple import config
 from django.core.mail import send_mail
+from django.contrib.auth.models import User
+from django.utils import timezone
+
 
 mailsent=False
 sent_time=None
@@ -47,10 +52,14 @@ class LiveStreamConsumer(WebsocketConsumer):
 
     # Receive message from WebSocket
     def receive(self, text_data):
-        global count,process_this_frame
-
+        global process_this_frame,mailsent,send_a_mail_again,sent_time
         obj={'recognised_name':'None'}
-        bts_again=base64.b64decode(text_data)
+
+        pi_data=json.loads(text_data)
+        user_id=pi_data['id']
+        frames=bytes(pi_data['base64'])
+        
+        bts_again=base64.b64decode(frames)
         buff = np.fromstring(bts_again, np.uint8)
        
         img = cv2.imdecode(buff, cv2.IMREAD_COLOR)
@@ -67,7 +76,6 @@ class LiveStreamConsumer(WebsocketConsumer):
             names=[]
 
             for encoding in encodings:
-                print(count)
                 matches = face_recognition.compare_faces(encoding_array,encoding)
                 name='Unknown'
                 if True in matches:
@@ -79,11 +87,13 @@ class LiveStreamConsumer(WebsocketConsumer):
                         counts[name]=counts.get(name,0)+1
 
                     name=max(counts,key=counts.get)
-
+                print(name)
                 names.append(name)
                 obj['recognised_name']=names
-                obj['timestamp']=datetime.datetime.now()
-                print(name)
+                obj['timestamp']=timezone.now()
+                obj['intruder_frame']=frames
+                obj['user_id']=user_id
+
             process_this_frame = 0 
 
         process_this_frame= process_this_frame + 1 
@@ -95,7 +105,7 @@ class LiveStreamConsumer(WebsocketConsumer):
             self.room_group_name,
             {
                 'type': 'image',
-                'message': text_data,
+                'message': str(frames),
             }
         )
        
@@ -108,22 +118,20 @@ class LiveStreamConsumer(WebsocketConsumer):
         }))
 
 def sendmail(obj):
-    global mailsent
-    global sent_time
-    global send_a_mail_again
-    
-    if "Unknown" in obj.values():
-        # Checking if the sent_time is lesser than the current time
+    global sent_time,mailsent,send_a_mail_again
+
+    if "Unknown" in obj['recognised_name']:
         if (mailsent is False and sent_time is None) or obj['timestamp']>=send_a_mail_again:
             sent_time=obj['timestamp']
             mailsent=True
+
+            user=User.objects.filter(id=obj['user_id'])
+            adding_to_log=LogDetail.objects.create(owner_id=obj['user_id'],encoding=obj['intruder_frame'],timestamp=obj['timestamp'])
+
             send_a_mail_again=sent_time+datetime.timedelta(minutes=10)
-            # Sending a Mail
-            subject='Unknown Face detected'
-            message='Unknown face appeared at: '+sent_time.ctime()
-            email_from=config('EMAIL_HOST_USER')
-            recipient_list=['s.sanjay2016@vitstudent.ac.in']
-            send_mail(subject,message,email_from,recipient_list)
+            sent_at=sent_time.ctime()
+            send_email_task.delay(sent_at)
+            
         else:
             print('Sent Mail at :',sent_time)
             print('Time Now:',datetime.datetime.now())
