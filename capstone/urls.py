@@ -6,6 +6,6 @@ urlpatterns = [
     path('register',views.register,name='register'),
     path('', include('django.contrib.auth.urls')),
     path('encoding',encodingview.generateImageEncoding.as_view(),name='encodings'),
-    path('livestream/', views.room, name='room'),
+    path('livestream', views.room, name='room'),
     path('log',encodingview.generateLog.as_view(),name='logging')
 ]
