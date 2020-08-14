@@ -42,7 +42,7 @@ EMAIL_HOST_PASSWORD =config('EMAIL_HOST_PASSWORD')
 INSTALLED_APPS = [
     'channels',
     'rest_framework',
-    'chat',
+    'capstone',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
