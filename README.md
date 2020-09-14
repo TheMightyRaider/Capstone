@@ -1,4 +1,4 @@
-# CAPSTONE PROJECT
+# CAPSTONE 
 
 ## Smart Surveillance System
 
