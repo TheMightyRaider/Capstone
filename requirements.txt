@@ -31,7 +31,7 @@ imutils==0.5.3
 incremental==17.5.0
 kombu==4.6.8
 msgpack==0.6.2
-numpy==1.18.4
+numpy==1.22.0
 opencv-contrib-python==4.2.0.34
 Pillow==8.2.0
 pkg-resources==0.0.0
